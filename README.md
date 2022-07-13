@@ -10,3 +10,5 @@ I will be giving credit to projects that I got inspiration from below
 https://github.com/drexico/delete-all-servers
 
 https://github.com/quan3a1dvt/DiscordServer-Leaver
+
+https://github.com/Nexons/friendnuker

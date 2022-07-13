@@ -67,4 +67,24 @@ async def serverclear(ctx):
         for guild in Dylanbot.guilds:
             await guild.delete()
 
+@Dylanbot.command()
+async def massunfriend(ctx):
+    await ctx.message.delete()
+    for user in Dylanbot.user.friends:
+        await user.remove_friend()
+
+@Dylanbot.command()
+async def massfarewell(ctx, message):
+    await ctx.message.delete()
+    for user in Dylanbot.user.friends:
+        await user.send(message)
+        await user.remove_friend()
+
+@Dylanbot.command()
+async def massgcleave(ctx):
+    await ctx.message.delete()
+    for channel in Dylanbot.private_channels:
+        if isinstance(channel, discord.GroupChannel):
+                await channel.leave()
+
 Dylanbot.run(token, bot=False)
