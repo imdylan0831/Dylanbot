@@ -16,17 +16,13 @@ with open('config.json') as f:
 
 token = config.get('token')
 prefix = config.get('prefix')
-url = "https://discord.com/api/v9/users/@me/guilds/"
 
 Dylanbot = discord.Client()
 Dylanbot = commands.Bot(
     command_prefix=prefix, 
     self_bot=True
 )
-
-async def on_ready():
-    Dylanbot.remove_command('help')
-    await Dylanbot.change_presence(activity=discord.Streaming(name="Dylanbot", url="https://twitch.tv/#"))
+Dylanbot.remove_command('help')
 
 def Clear():
     os.system('cls')
@@ -74,11 +70,16 @@ async def massunfriend(ctx):
         await user.remove_friend()
 
 @Dylanbot.command()
-async def massfarewell(ctx, message):
+async def massblock(ctx, message):
     await ctx.message.delete()
     for user in Dylanbot.user.friends:
-        await user.send(message)
-        await user.remove_friend()
+        await user.block()
+
+@Dylanbot.command()
+async def massunblock(ctx, message):
+    await ctx.message.delete()
+    for user in Dylanbot.user.blocked:
+        await user.unblock()
 
 @Dylanbot.command()
 async def massgcleave(ctx):
@@ -86,5 +87,27 @@ async def massgcleave(ctx):
     for channel in Dylanbot.private_channels:
         if isinstance(channel, discord.GroupChannel):
                 await channel.leave()
+
+@Dylanbot.command()
+async def massgcfarewell(ctx, message):
+    await ctx.message.delete()
+    for channel in Dylanbot.private_channels:
+        if isinstance(channel, discord.GroupChannel):
+            await channel.send(message)
+            await channel.leave()
+
+@Dylanbot.command()
+async def massdecline(ctx):
+    await ctx.message.delete()
+    for relationship in Dylanbot.user.relationships:
+        if relationship is discord.RelationshipType.friend:
+            await relationship.delete()
+
+@Dylanbot.command()
+async def massaccept(ctx):
+    await ctx.message.delete()
+    for relationship in Dylanbot.user.relationships:
+        if relationship == discord.RelationshipType.incoming_request:
+            await relationship.accept()
 
 Dylanbot.run(token, bot=False)
